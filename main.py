@@ -13,6 +13,8 @@ class TreeNode(object):
         return(self.data < other.data)
     def children(self):
         return((self.left, self.right))
+    def __repr__(self):
+        return f"{(self.left, self.right, self.data)}"
     
 def get_frequencies(fname):
     f=open(fname, 'r')
@@ -35,8 +37,11 @@ def make_huffman_tree(f):
     # insert z into the priority queue (using an empty character "")
     while (p.qsize() > 1):
         # TODO
-        pass
-        
+        # First two element in the queue is 2 nodes we looking for
+        first_node = p.get()
+        second_node = p.get()
+        new_node = TreeNode(first_node, second_node, (first_node.data[0] + second_node.data[0], '')) # .data()[0] should be the freq of the node.         
+        p.put(new_node)
     # return root of the tree
     return p.get()
 
@@ -48,6 +53,15 @@ def make_huffman_tree(f):
 # Return the code object.
 def get_code(node, prefix="", code={}):
     # TODO - perform a tree traversal and collect encodings for leaves in code
+    if node.left == None and node.right == None:
+        code[node.data[1]] = prefix
+        return code
+    #Choose left
+    if node.left:
+        get_code(node.left, prefix + "0", code)
+    if node.right:
+        get_code(node.right, prefix + "1", code)
+    return code
     pass
 
 # Given an alphabet and frequencies, compute the cost of a fixed length encoding.
@@ -55,11 +69,15 @@ def get_code(node, prefix="", code={}):
 # determine the number of bits needed to represent each character.
 def fixed_length_cost(f):
     # TODO
+    bits_per_char = math.log2(len(f.keys()))
+    num_char = sum(f.values())
+    return bits_per_char * num_char
     pass
 
 # given a Huffman encoding and character frequencies, compute cost of a Huffman encoding
 def huffman_cost(C, f):
     # TODO
+    return sum(len(C[i]) * f[i] for i in C.keys())
     pass
 
 def analyze_files():
