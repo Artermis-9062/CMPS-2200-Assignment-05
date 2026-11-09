@@ -6,3 +6,6 @@
 *.toc
 __pycache__
 .ipynb_checkpoints
+.venv/
+.vscode/
+.pytest_cache/

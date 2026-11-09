@@ -110,7 +110,25 @@ def MED(S, T):
 def fast_MED(S, T):
     # TODO -  implement bottom-up memoization
     # returns only the edit distance cost
-    pass
+    row = len(T)+ 1
+    col = len(S) + 1
+    S = "" + S
+    T = "" + T
+    dp = [[0 for _ in range(col)] for _ in range(row)]
+    
+    for c in range(col):
+        dp[0][c] = c
+
+    for r in range(row):
+        dp[r][0] = r
+
+    for c in range(1, col):
+        for r in range(1, row):
+            if S[c] == T[r]:
+                dp[r][c] = dp[r-1][c-1]
+            else:
+                dp[r][c] = min(1 + dp[r-1][c], 1 + dp[r][c-1])
+    return dp[-1][-1]
 
 def fast_align_MED(S, T):
     # TODO - implement bottom-up memoization, allowing
