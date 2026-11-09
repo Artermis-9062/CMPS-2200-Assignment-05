@@ -112,8 +112,8 @@ def fast_MED(S, T):
     # returns only the edit distance cost
     row = len(T)+ 1
     col = len(S) + 1
-    S = "" + S
-    T = "" + T
+    S = "-" + S
+    T = "-" + T
     dp = [[0 for _ in range(col)] for _ in range(row)]
     
     for c in range(col):
@@ -131,7 +131,48 @@ def fast_MED(S, T):
     return dp[-1][-1]
 
 def fast_align_MED(S, T):
-    # TODO - implement bottom-up memoization, allowing
+    # implement bottom-up memoization, allowing
     # for traceback of alignment
     # returns the two alignments (see test_align)
-    pass
+
+    row = len(T) + 1
+    col = len(S) + 1
+    S_pad = "-" + S
+    T_pad = "-" + T
+    dp = [[0 for _ in range(col)] for _ in range(row)]
+
+    for c in range(col):
+        dp[0][c] = c
+
+    for r in range(row):
+        dp[r][0] = r
+
+    for c in range(1, col):
+        for r in range(1, row):
+            if S_pad[c] == T_pad[r]:
+                dp[r][c] = dp[r-1][c-1]
+            else:
+                dp[r][c] = min(1 + dp[r-1][c], 1 + dp[r][c-1], 1 + dp[r-1][c-1])
+
+    # traceback to build the alignment
+    align_S, align_T = "", ""
+    r, c = row - 1, col - 1
+    while r > 0 or c > 0:
+        if r > 0 and c > 0 and S_pad[c] == T_pad[r]:
+            align_S = S_pad[c] + align_S
+            align_T = T_pad[r] + align_T
+            r, c = r - 1, c - 1
+        elif c > 0 and dp[r][c] == dp[r][c-1] + 1:
+            align_S = S_pad[c] + align_S
+            align_T = "-" + align_T
+            c -= 1
+        elif r > 0 and dp[r][c] == dp[r-1][c] + 1:
+            align_S = "-" + align_S
+            align_T = T_pad[r] + align_T
+            r -= 1
+        else:
+            align_S = S_pad[c] + align_S
+            align_T = T_pad[r] + align_T
+            r, c = r - 1, c - 1
+
+    return (align_S, align_T)
