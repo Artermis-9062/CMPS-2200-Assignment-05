@@ -108,7 +108,7 @@ def MED(S, T):
         if (S[0] == T[0]):
             return(MED(S[1:], T[1:]))
         else:
-            return(1 + min(MED(S, T[1:]), MED(S[1:], T)))
+            return(1 + min(MED(S, T[1:]), MED(S[1:], T), MED(S[1:], T[1:])))
 
 
 def fast_MED(S, T):
@@ -131,7 +131,7 @@ def fast_MED(S, T):
             if S[c] == T[r]:
                 dp[r][c] = dp[r-1][c-1]
             else:
-                dp[r][c] = min(1 + dp[r-1][c], 1 + dp[r][c-1])
+                dp[r][c] = min(1 + dp[r-1][c], 1 + dp[r][c-1], 1 + dp[r-1][c-1])
     return dp[-1][-1]
 
 def fast_align_MED(S, T):
