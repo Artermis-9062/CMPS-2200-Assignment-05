@@ -13,14 +13,14 @@ Place all written answers from `assignment-05.md` here for easier grading.
 
 | File | Fixed-length cost | Huffman cost | Huffman / Fixed |
 |---|---|---|---|
-| alice29.txt | 919071.34 | 676374 | 0.736 |
-| asyoulik.txt | 762022.51 | 606448 | 0.796 |
-| f1.txt | 1244.55 | 826 | 0.664 |
-| fields.c | 72384.16 | 56206 | 0.776 |
-| grammar.lsp | 23248.54 | 17356 | 0.747 |
+| alice29.txt | 1039367 | 676374 | 0.651 |
+| asyoulik.txt | 876253 | 606448 | 0.692 |
+| f1.txt | 1340 | 826 | 0.616 |
+| fields.c | 78050 | 56206 | 0.720 |
+| grammar.lsp | 26047 | 17356 | 0.666 |
 
-Huffman is consistently cheaper, using about $66\%$–$80\%$ of the fixed-length
-cost, because character frequencies in real text are highly skewed.
+Huffman is consistently cheaper, using about $62\%$–$72\%$ of the fixed-length
+cost (fixed-length uses $\lceil \log_2 |\Sigma| \rceil$ bits per character), because character frequencies in real text are highly skewed.
 
 - **1e. (4 pts)** What is the expected
   cost of a Huffman encoding for the document? Is it consistent across
@@ -73,6 +73,29 @@ the algorithm finds by repeating the same step. So the algorithm is optimal.
 
 - **2c. (4 pts)** What is the work and span of your algorithm?
 
-Using $\lfloor \log_2 N \rfloor + 1$ denominations, the algorithm takes
-$O(\log N)$ steps, each depending on the previous one. Work $= O(\log N)$ and
-span $= O(\log N)$.
+With denominations $2^0,\dots,2^k$, the algorithm uses $\lfloor N/2^k \rfloor$ coins
+of the largest denomination, then at most one coin of each smaller denomination,
+so it takes $O(N/2^k + k)$ steps, each depending on the previous one. When
+$k \approx \log_2 N$ this is $O(\log N)$. Work $= O(N/2^k + k) = O(\log N)$ and
+span $=$ work, since the steps are sequential.
+
+
+**3: Edit Distance**
+
+- **3a.** State the optimal substructure property for edit distance with
+  insertions, deletions and substitutions of unit cost.
+
+Compare the first characters of $S$ and $T$:
+
+$$
+MED(S,T)=\begin{cases}
+|T| & \text{if } S=\text{""} \\
+|S| & \text{if } T=\text{""} \\
+MED(S[1:],T[1:]) & \text{if } S[0]=T[0] \\
+1+\min\big(MED(S,T[1:]),\ MED(S[1:],T),\ MED(S[1:],T[1:])\big) & \text{otherwise}
+\end{cases}
+$$
+
+The three terms in the $\min$ are: insert $T[0]$ (leaves $S$ vs. $T[1:]$), delete
+$S[0]$ (leaves $S[1:]$ vs. $T$), and substitute $S[0]$ with $T[0]$ (leaves
+$S[1:]$ vs. $T[1:]$).

@@ -73,7 +73,7 @@ def get_code(node, prefix="", code={}):
 # determine the number of bits needed to represent each character.
 def fixed_length_cost(f):
     # TODO
-    bits_per_char = math.log2(len(f.keys()))
+    bits_per_char = math.ceil(math.log2(len(f.keys())))
     num_char = sum(f.values())
     return bits_per_char * num_char
     pass
